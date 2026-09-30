@@ -61,6 +61,8 @@ describe("addendum: sign-in + editable content", () => {
     assert.match(src, /\/dashboard/, "must guard dashboard");
     assert.match(src, /\/preview/, "must guard preview");
     assert.match(src, /\/login/, "signed-out visitors redirect to login");
+    assert.ok(fs.existsSync(path.join(root, "app/auth/confirm/route.ts")), "needs email-code exchange route");
+    assert.match(read("components/LoginForm.tsx"), /auth\/confirm\?next=\/dashboard/, "emails must land on the code-exchange route");
   });
   it("offers sign-out + session state, no public self-registration", () => {
     assert.ok(fs.existsSync(path.join(root, "components/SignOutButton.tsx")), "needs sign-out");

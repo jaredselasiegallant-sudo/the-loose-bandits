@@ -30,7 +30,7 @@ export async function POST(req: Request): Promise<Response> {
   const admin = createClient(url, service, { auth: { autoRefreshToken: false, persistSession: false } });
   const site = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: site ? `${site}/dashboard` : undefined,
+    redirectTo: site ? `${site}/auth/confirm?next=/dashboard` : undefined,
   });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

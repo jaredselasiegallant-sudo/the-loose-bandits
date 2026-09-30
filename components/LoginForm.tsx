@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 function friendlyError(message: string): string {
@@ -15,6 +15,8 @@ function friendlyError(message: string): string {
 export default function LoginForm() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const linkError = searchParams.get("error");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"magic" | "password">("magic");
@@ -63,7 +65,7 @@ export default function LoginForm() {
             if (mode === "magic") {
               const { error } = await supabase.auth.signInWithOtp({
                 email,
-                options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+                options: { emailRedirectTo: `${window.location.origin}/auth/confirm?next=/dashboard` },
               });
               setStatus(error ? `Error: ${friendlyError(error.message)}` : "Check your email for the sign-in link.");
             } else {
@@ -122,7 +124,7 @@ export default function LoginForm() {
               setBusy(true);
               try {
                 const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                  redirectTo: `${window.location.origin}/login`,
+                  redirectTo: `${window.location.origin}/auth/confirm?next=/dashboard`,
                 });
                 setStatus(error ? `Error: ${friendlyError(error.message)}` : "Password reset email sent.");
               } finally {
@@ -132,6 +134,11 @@ export default function LoginForm() {
           >
             Forgot password? Send reset email
           </button>
+        )}
+        {linkError && (
+          <p className="font-bold text-red-800" role="alert">
+            Sign-in link failed: {linkError}. Request a fresh link below.
+          </p>
         )}
         {status && (
           <p className="meta" role="status">

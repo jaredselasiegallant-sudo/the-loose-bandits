@@ -16,7 +16,9 @@
    - `supabase/migrations/0003_content.sql` (site_settings, revisions, archiving)
 3. Auth → URL Configuration:
    - Site URL: `https://YOUR-DOMAIN`
-   - Redirects: `https://YOUR-DOMAIN/dashboard`, `http://localhost:3000/dashboard`
+   - Redirects (all four — the `/auth/confirm` ones exchange the email code for a session):
+     `https://YOUR-DOMAIN/auth/confirm`, `https://YOUR-DOMAIN/dashboard`,
+     `http://localhost:3000/auth/confirm`, `http://localhost:3000/dashboard`
    - Enable Email magic links (recommended). To use passwords instead/additionally:
      Supabase → Auth → Providers → Email → enable “Email + password”, then members
      sign in via the Password tab; “Forgot password” sends a reset email.
